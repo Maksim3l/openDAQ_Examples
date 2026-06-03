@@ -41,13 +41,3 @@ if __name__ == "__main__":
         print('\n' + device_info.name + ':')
         daq_utils.print_property_object(device_info, 1)
         connection_strings.append(device_info.connection_string)
-
-    print('\nConnecting to devices...')
-    connected_devices = []
-    for connection_string in connection_strings:
-        daq_utils.connect_and_append_device(instance, connection_string, connected_devices)
-
-    print('\nConnected devices:')
-    for device in connected_devices:
-        print(device.name)
-
