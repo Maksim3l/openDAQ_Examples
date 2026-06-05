@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Struct properties contain property values of type "Struct". In openDAQ, such properties contain a struct type
 # that specifies a set of field names, field value types, and field default values. Each struct of a given struct
 # type must have the requisite fields.

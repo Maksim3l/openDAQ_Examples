@@ -10,7 +10,6 @@ import os
 import time
 import opendaq as daq
 import sys
-sys.path.append("..")
 import Utils.daq_utils as daq_utils
 
 if __name__ == "__main__":

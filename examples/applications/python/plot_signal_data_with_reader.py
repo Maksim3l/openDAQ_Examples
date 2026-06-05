@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Uses the Python matplotlib package to plot the 1st 1000 samples of a simulated sine wave signal.
 # The data is obtained by using the Stream Reader.
 ##

@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # openDAQ devices can allow users to configure their network settings by submitting a mDNS query for the specific
 # targeting a specific device. Not all openDAQ devices support this feature - it must be enabled by the vendor.
 #

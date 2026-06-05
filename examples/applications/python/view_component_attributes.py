@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Each component type as a set of attributes that can be configured either by a module,
 # an application (end-user), or both. These attributes can be locked or unlocked. A module
 # should lock all attributes it does not allow users to configure. An application should

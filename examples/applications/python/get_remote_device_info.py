@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Discovers remote and local devices and prints server information. Remote devices are those that are running
 # their own openDAQ instance with a server. To a simulator of such a device, the example in
 # "Integration Examples/simulator.py" can be used.

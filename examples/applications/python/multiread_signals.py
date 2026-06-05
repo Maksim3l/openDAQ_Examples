@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Example that creates mock signals with a predetermined packet sequence and uses the openDAQ multi reader
 # to read the signal data.
 #

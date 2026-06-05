@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # walk the tree, print channels/signals/FBs
 # openDAQ features a tree structure of components. The tree always starts with a device at its root.
 # Each object is either a folder (has children components) or a component (can not have child components -

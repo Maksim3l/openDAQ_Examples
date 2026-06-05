@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Each connected-to remote device (a device running an openDAQ server) can have a set of enumeration-type connection
 # statuses stored in its connection status container. These give end-users the information on the state of the
 # connection, informing them of connection loss, whether we are reconnecting...

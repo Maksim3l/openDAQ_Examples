@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Example that showcases how to enable device monitoring for devices connected via the Native Configuration
 # (and Streaming) protocol. Monitoring enables a heartbeat mechanism hat can detect connection loss when the
 # device does not gracefully disconnect.

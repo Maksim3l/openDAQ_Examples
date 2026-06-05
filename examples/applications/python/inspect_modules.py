@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Example that shows how the module manager can be used to inspect what modules are loaded. This gives us
 # information on what component types can be added by an instance that is the owner of said module manager.
 #

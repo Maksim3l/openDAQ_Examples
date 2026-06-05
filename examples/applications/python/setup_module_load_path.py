@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Modules in openDAQ are shared libraries that are loaded during runtime. They allow users to add different
 # components that are bundled within the module. Each module is a bundle of different component types:
 # Devices, Function Blocks, Servers, Streaming objects.

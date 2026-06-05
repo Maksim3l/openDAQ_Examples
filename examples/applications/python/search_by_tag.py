@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Each component in openDAQ has 0 to n tags that can be used to group and filter components
 # The tags can be accessed via the `component.tags` attribute.
 #

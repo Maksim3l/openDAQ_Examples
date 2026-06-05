@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # The openDAQ simulated device contains a rough approximation of a CAN channel that contains
 # Structured data with the fields "Length" and "ArbId". This example uses the stream reader
 # to read struct-type data from the simulated CAN channel.

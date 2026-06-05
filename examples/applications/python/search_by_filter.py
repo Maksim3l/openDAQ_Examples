@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Showcases the openDAQ search filters. Search filters can be used in tree traversal methods such as
 # `folder.getItems` to filter out any results that do not match the filter criteria. This example
 # uses them to traverse the openDAQ simulator.

@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Core events are events that are triggered whenever a change to the component structure is done. Ie. whenever
 # a component is added/removed, property modified, a component is updated... Each event type has a set of defined
 # parameters that can be inspected. Any application can listen and react to said core events.

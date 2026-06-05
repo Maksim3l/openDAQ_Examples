@@ -1,4 +1,7 @@
 ##
+# @tags: 
+# @title: 
+##
 # Creates a temporary json file to be used as a Json config provider for creating the openDAQ
 # instance. The file contains reference configuration parameters for mDNS server ratelimiting.
 #

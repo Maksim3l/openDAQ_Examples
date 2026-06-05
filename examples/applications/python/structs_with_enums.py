@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+##
+# @tags: 
+# @title: 
 ##
 # This script demonstrates the use of structs and enums in the OpenDAQ framework.
 ##
