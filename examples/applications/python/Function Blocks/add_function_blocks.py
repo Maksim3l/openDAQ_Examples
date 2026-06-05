@@ -1,33 +1,47 @@
 ##
-# Function blocks are components that allow can process, generate, or consume signal data. They are bundled in
-# openDAQ modules (plugins) where each module can give users access to 0 or more function blocks.
-#
-# This example prints what function blocks are available within the loaded modules and adds all of them.
+# @tags: howto, fundamental, function-blocks
+# @title: How to add a function block
+##
+# Lists available function block types, adds one, and prints
+# its properties and child components.
 ##
 
-import opendaq as daq
 import sys
-sys.path.append("..")
-import daq_utils
+import opendaq as daq
+import Utils.daq_utils as daq_utils
 
 if __name__ == "__main__":
-    instance = daq.Instance()
+    try:
+        instance = daq.Instance()
 
-    # List available function block types and store IDs
-    print('Available function block types:')
-    ids = []
-    types = instance.available_function_block_types
-    for id_, type_ in types.items():
-        print('\n' + id_)
-        daq_utils.print_struct(type_, 1)
-        ids.append(id_)
+        types = instance.available_function_block_types
+        if not types:
+            print("No function block types available", file=sys.stderr)
+            print("exit 1")
+            sys.exit(1)
 
-    print('\nAdding found function blocks...')
-    fbs = []
-    for id_ in ids:
-        daq_utils.add_and_append_fb(instance, id_, fbs)
+        print("Available function block types:")
+        for id_, type_ in types.items():
+            print("\n" + id_)
+            daq_utils.print_struct(type_, 1)
 
-    print('Function block properties and child components:')
-    for fb in fbs:
+        # Function blocks can be signal processing (e.g. statistics, FFT) or protocol-based.
+        type_id = "RefFBModuleStatistics"
+        if type_id not in types:
+            print(f"{type_id} not available", file=sys.stderr)
+            print("exit 1")
+            sys.exit(1)
+
+        print(f"\nAdding function block: {type_id}")
+        fb = instance.add_function_block(type_id)
+
+        print("\nFunction block properties and child components:")
         daq_utils.print_component(fb)
-        print()
+
+    except Exception as e:
+        print(f"Example failed: {e}", file=sys.stderr)
+        print("exit 1")
+        sys.exit(1)
+
+    print("exit 0")
+    sys.exit(0)
