@@ -25,6 +25,7 @@ if __name__ == "__main__":
             print("\n" + id_)
             daq_utils.print_struct(type_, 1)
 
+        # Function blocks can be signal processing (e.g. statistics, FFT) or protocol-based.
         type_id = "RefFBModuleStatistics"
         if type_id not in types:
             print(f"{type_id} not available", file=sys.stderr)

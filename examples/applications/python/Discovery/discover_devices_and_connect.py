@@ -41,7 +41,9 @@ if __name__ == "__main__":
             print(f"\n  {info.name}:")
             daq_utils.print_property_object(info, 2)
 
-        # add_device takes the connection string from the DeviceInfo.
+        # Connection strings follow the format "prefix://address" where
+        # the prefix corresponds to a device type. The "daq://" prefix
+        # automatically selects the protocol.
         print("\nConnecting to devices...")
         connected = []
         for info in available_devices:
