@@ -9,8 +9,7 @@
 
 import opendaq as daq
 import sys
-sys.path.append("..")
-import daq_utils
+import Utils.daq_utils as daq_utils
 
 if __name__ == "__main__":
     server = daq_utils.setup_simulator()

@@ -9,10 +9,9 @@
 # This example showcases how a struct-type property can be read and modified.
 ##
 
-import sys
-sys.path.append("..")
-import daq_utils
 import opendaq as daq
+import sys
+import Utils.daq_utils as daq_utils
 
 if __name__ == "__main__":
     # Create a simulator device

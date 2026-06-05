@@ -11,6 +11,7 @@
 ##
 
 import opendaq as daq
+import sys
 import numpy as np
 
 ctx = daq.NullContext()

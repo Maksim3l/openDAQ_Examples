@@ -10,6 +10,7 @@
 ##
 
 import opendaq as daq
+import sys
 
 if __name__ == "__main__":
     instance_builder = daq.InstanceBuilder()

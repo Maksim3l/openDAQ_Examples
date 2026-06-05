@@ -5,7 +5,7 @@ import sys
 py_include = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(py_include)
 
-import daq_utils
+import Utils.daq_utils as daq_utils
 
 def compute_supported_protocols(device_info, instance):
     server_capabilities = device_info.server_capabilities

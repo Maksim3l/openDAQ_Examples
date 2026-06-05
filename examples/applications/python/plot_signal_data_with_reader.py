@@ -3,11 +3,9 @@
 # The data is obtained by using the Stream Reader.
 ##
 
-import sys
-sys.path.append("..")
-
 import opendaq as daq
-import daq_utils
+import sys
+import Utils.daq_utils as daq_utils
 import time
 import matplotlib.pyplot as plt
 

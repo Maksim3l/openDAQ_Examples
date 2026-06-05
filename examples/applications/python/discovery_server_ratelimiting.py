@@ -14,17 +14,18 @@
 
 import json
 from pathlib import Path
-import opendaq
+import opendaq as daq
+import sys
 
 CONFIG_FILE = Path("mdns-discovery-ratelimiting.json")
 
-config = opendaq.PropertyObject()
-config.add_property(opendaq.StringProperty(opendaq.String(
-    'Name'), opendaq.String('Reference device simulator'), opendaq.Boolean(True)))
-config.add_property(opendaq.StringProperty(opendaq.String(
-    'LocalId'), opendaq.String('RefDevSimulator'), opendaq.Boolean(True)))
-config.add_property(opendaq.StringProperty(opendaq.String(
-    'SerialNumber'), opendaq.String('sim01'), opendaq.Boolean(True)))
+config = daq.PropertyObject()
+config.add_property(daq.StringProperty(daq.String(
+    'Name'), daq.String('Reference device simulator'), daq.Boolean(True)))
+config.add_property(daq.StringProperty(daq.String(
+    'LocalId'), daq.String('RefDevSimulator'), daq.Boolean(True)))
+config.add_property(daq.StringProperty(daq.String(
+    'SerialNumber'), daq.String('sim01'), daq.Boolean(True)))
 
 # Create a new openDAQ(TM) Json config provider file
 # Fail immediately if file exists
@@ -53,10 +54,10 @@ except Exception as e:
     exit(1)
 
 # Read from file and create config provider
-config_provider = opendaq.JsonConfigProvider(opendaq.String(str(CONFIG_FILE)))
+config_provider = daq.JsonConfigProvider(daq.String(str(CONFIG_FILE)))
 
 # Create a new openDAQ(TM) instance builder
-instance_builder = opendaq.InstanceBuilder()
+instance_builder = daq.InstanceBuilder()
 
 # Add Mdns discovery service available for servers
 instance_builder.add_discovery_server("mdns")
@@ -68,7 +69,7 @@ instance_builder.add_config_provider(config_provider)
 instance_builder.set_root_device('daqref://device0', config)
 
 # until instance builder factory gets updated
-instance_builder.module_path = opendaq.OPENDAQ_MODULES_DIR
+instance_builder.module_path = daq.OPENDAQ_MODULES_DIR
 
 # Creating a new instance from builder
 instance = instance_builder.build()
@@ -76,7 +77,7 @@ instance = instance_builder.build()
 # cleanup created file
 CONFIG_FILE.unlink()
 
-# Start an openDAQ OpcUa and native streaming servers
+# Start an daq OpcUa and native streaming servers
 servers = instance.add_standard_servers()
 
 # Enable discovery for all servers

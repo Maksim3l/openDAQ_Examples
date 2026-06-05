@@ -7,7 +7,9 @@
 # The "Integration Examples/simulator.py" can be run to provide such a device.
 ##
 
-import opendaq
+import opendaq as daq
+import sys
+import Utils.daq_utils as daq_utils
 
 def print_status_fields(status_, status_name):
     print(status_name + ':')
@@ -22,7 +24,7 @@ def print_status_fields(status_, status_name):
     print('Possible states:', status_.enumeration_type.enumerator_names, '\n')
 
 if __name__ == "__main__":
-    instance = opendaq.Instance()
+    instance = daq.Instance()
 
     # Connects to a Native Protocol device on the local network.
     device = instance.add_device('daq.nd://127.0.0.1')

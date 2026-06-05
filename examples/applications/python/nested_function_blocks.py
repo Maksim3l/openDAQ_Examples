@@ -8,7 +8,6 @@
 
 import opendaq as daq
 import sys
-sys.path.append("..")
 
 if __name__ == "__main__":
     try:

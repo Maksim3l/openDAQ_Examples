@@ -8,20 +8,20 @@
 ##
 
 import time
-import opendaq
+import opendaq as daq
 
 # Configures the device config object used to set up the connection parameters when adding devices
-def set_device_config(config: opendaq.IPropertyObject):
-    def enable_monitoring_on_transport_layer(config: opendaq.IPropertyObject):
-        transport_layer_config = opendaq.IPropertyObject.cast_from(config.get_property_value("TransportLayerConfig"))
+def set_device_config(config: daq.IPropertyObject):
+    def enable_monitoring_on_transport_layer(config: daq.IPropertyObject):
+        transport_layer_config = daq.IPropertyObject.cast_from(config.get_property_value("TransportLayerConfig"))
         transport_layer_config.set_property_value("MonitoringEnabled", True)
 
-    device_config = opendaq.IPropertyObject.cast_from(config.get_property_value("Device"))
-    native_device_config = opendaq.IPropertyObject.cast_from(device_config.get_property_value("OpenDAQNativeConfiguration"))
+    device_config = daq.IPropertyObject.cast_from(config.get_property_value("Device"))
+    native_device_config = daq.IPropertyObject.cast_from(device_config.get_property_value("OpenDAQNativeConfiguration"))
     enable_monitoring_on_transport_layer(native_device_config)
 
 if __name__ == "__main__":
-    instance = opendaq.Instance()
+    instance = daq.Instance()
 
     device_config = instance.create_default_add_device_config()
     set_device_config(device_config)

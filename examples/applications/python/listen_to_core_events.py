@@ -9,11 +9,9 @@
 # core events, whereas pull-based ones (ie. OPC UA) do not.
 ##
 
-import sys
-sys.path.append("..")
-
 import opendaq as daq
-import daq_utils
+import sys
+import Utils.daq_utils as daq_utils
 import time
 
 def on_core_event(sender, args):

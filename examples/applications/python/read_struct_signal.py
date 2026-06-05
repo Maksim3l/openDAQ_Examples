@@ -4,11 +4,9 @@
 # to read struct-type data from the simulated CAN channel.
 ##
 
-import sys
-sys.path.append("..")
-
 import opendaq as daq
-import daq_utils
+import sys
+import Utils.daq_utils as daq_utils
 
 if __name__ == "__main__":
     device = daq_utils.setup_simulator()

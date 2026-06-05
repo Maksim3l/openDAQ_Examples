@@ -19,8 +19,7 @@
 
 import opendaq as daq
 import sys
-sys.path.append("..")
-import daq_utils
+import Utils.daq_utils as daq_utils
 
 def traverse(component, depth = 0):
     print_str = '- ' + component.local_id + ' : ' + daq_utils.get_component_id_str(component)

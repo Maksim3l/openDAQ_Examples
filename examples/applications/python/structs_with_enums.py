@@ -5,7 +5,8 @@
 ##
 
 import opendaq as daq
-
+import sys
+import Utils.daq_utils as daq_utils
 
 if __name__ == '__main__':
     type_manager = daq.TypeManager()

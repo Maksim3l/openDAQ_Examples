@@ -1,17 +1,17 @@
 import numpy as np
-import opendaq
+import opendaq as daq
 import time
 
 input_file = "path/to/file"
 
 # Create an openDAQ instace.
-instance = opendaq.Instance()
+instance = daq.Instance()
 
 # Add both the reader and writer
 # The writer has both the IFunctionBlock and IRecorder interface
 reader_fb = instance.add_function_block("AudioDeviceModuleWavReader")
 writer_fb = instance.add_function_block("AudioDeviceModuleWavWriter")
-writer_re = opendaq.IRecorder.cast_from(writer_fb)
+writer_re = daq.IRecorder.cast_from(writer_fb)
 
 writer_fb.input_ports[0].connect(reader_fb.signals[0])
 reader_fb.set_property_value("FilePath", input_file)

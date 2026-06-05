@@ -9,7 +9,6 @@
 import time
 import opendaq as daq
 import sys
-sys.path.append("..")
 import Utils.daq_utils as daq_utils
 
 

@@ -6,11 +6,9 @@
 
 # TODO: aliases for search filters, eg. daq.Any()
 
-import sys
-sys.path.append("..")
-
 import opendaq as daq
-import daq_utils
+import sys
+import Utils.daq_utils as daq_utils
 
 def print_component_list(list_):
     for component in list_:
