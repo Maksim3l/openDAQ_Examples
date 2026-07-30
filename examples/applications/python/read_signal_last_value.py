@@ -24,10 +24,8 @@ if __name__ == "__main__":
         while signal.last_value is None and time.time() < deadline:
             time.sleep(0.1)
 
-        if signal.last_value is None:
-            print(f"{signal.name} produced no value", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        daq_utils.exit_if(signal.last_value is None,
+                          f"{signal.name} produced no value")
 
         print(f"{signal.name}:")
         for _ in range(5):

@@ -17,10 +17,7 @@ if __name__ == "__main__":
         simulator = daq_utils.setup_simulator()
 
         signals = simulator.get_signals_recursive()
-        if not signals:
-            print("No signals found", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        daq_utils.exit_if_empty(signals, "No signals found")
 
         signal = signals[0]
         print(f"Using signal: {signal.name}")

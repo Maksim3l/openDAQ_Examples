@@ -15,10 +15,7 @@ if __name__ == "__main__":
         instance = daq.Instance()
 
         types = instance.available_function_block_types
-        if not types:
-            print("No function block types available", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        daq_utils.exit_if_empty(types, "No function block types available")
 
         print("Available function block types:")
         for id_, type_ in types.items():
@@ -27,10 +24,7 @@ if __name__ == "__main__":
 
         # Function blocks can be signal processing (e.g. statistics, FFT) or protocol-based.
         type_id = "RefFBModuleStatistics"
-        if type_id not in types:
-            print(f"{type_id} not available", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        daq_utils.exit_if(type_id not in types, f"{type_id} not available")
 
         print(f"\nAdding function block: {type_id}")
         fb = instance.add_function_block(type_id)

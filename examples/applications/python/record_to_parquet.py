@@ -17,10 +17,7 @@ if __name__ == "__main__":
         simulator = daq_utils.setup_simulator()
 
         signals = simulator.get_signals_recursive()
-        if not signals:
-            print("No signals found", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        daq_utils.exit_if_empty(signals, "No signals found")
 
         recorder_fb = simulator.add_function_block("ParquetRecorder")
         recorder = daq.IRecorder.cast_from(recorder_fb)
@@ -37,15 +34,15 @@ if __name__ == "__main__":
         print("Stopped recording")
 
         path = recorder_fb.get_property_value("Path")
-        parquet_files = [f for f in os.listdir(path) if f.endswith(".parquet")]
-        if parquet_files:
-            print(f"\nRecorded files:")
-            for f in parquet_files:
-                print(f"  {f}")
-        else:
-            print("No parquet files found", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        parquet_files = []
+        for entry in os.listdir(path):
+            if entry.endswith(".parquet"):
+                parquet_files.append(entry)
+        daq_utils.exit_if_empty(parquet_files, "No parquet files found")
+
+        print(f"\nRecorded files:")
+        for f in parquet_files:
+            print(f"  {f}")
 
     except Exception as e:
         print(f"Example failed: {e}", file=sys.stderr)

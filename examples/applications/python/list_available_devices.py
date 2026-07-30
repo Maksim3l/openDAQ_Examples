@@ -15,10 +15,7 @@ if __name__ == "__main__":
         instance = daq.Instance()
 
         available_devices = instance.available_devices
-        if not available_devices:
-            print("No devices found", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        daq_utils.exit_if_empty(available_devices, "No devices found")
 
         # Devices that advertise server capabilities support openDAQ
         # protocol connections. Those without are provided directly

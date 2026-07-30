@@ -8,6 +8,7 @@
 
 import opendaq as daq
 import sys
+import Utils.daq_utils as daq_utils
 
 if __name__ == "__main__":
     try:
@@ -16,10 +17,7 @@ if __name__ == "__main__":
         statistics_fb = instance.add_function_block("RefFBModuleStatistics")
 
         nested_types = statistics_fb.available_function_block_types
-        if not nested_types:
-            print("No nested FB types available", file=sys.stderr)
-            print("exit 1")
-            sys.exit(1)
+        daq_utils.exit_if_empty(nested_types, "No nested FB types available")
 
         # Function blocks can host other function blocks. Adding to
         # an FB works the same as adding to the instance.
