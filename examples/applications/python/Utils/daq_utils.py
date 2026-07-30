@@ -1,4 +1,5 @@
 import os
+import sys
 import opendaq as daq
 
 if not hasattr(daq, 'OPENDAQ_MODULES_DIR'):
@@ -6,6 +7,35 @@ if not hasattr(daq, 'OPENDAQ_MODULES_DIR'):
 
 def print_indented(msg, depth):
     print('  ' * depth, msg)
+
+# Reports the message on stderr and leaves with exit code 1.
+def exit_if(condition, message):
+    if condition:
+        print(message, file=sys.stderr)
+        print('exit 1')
+        sys.exit(1)
+
+def exit_if_empty(collection, message):
+    exit_if(not len(collection), message)
+
+def print_field(label, value, width=18, indent=2):
+    print(f"{' ' * indent}{label + ':':<{width}} {value}")
+
+# Prints the id, name and description of each entry in an available-types
+# dictionary, along with the connection string prefix where the type has one.
+def print_types(label, types):
+    print(f'{label}:')
+    for component_type in types.values():
+        print(f'  {component_type.Id}')
+        print_field('name', component_type.Name, indent=4)
+        print_field('description', component_type.Description, indent=4)
+        if hasattr(component_type, 'Prefix'):
+            print_field('connection prefix', component_type.Prefix, indent=4)
+
+# Returns the signals under a component that carry every one of the given tags.
+def find_signals_by_tag(component, *tags):
+    return component.get_signals_recursive(
+        daq.RequiredTagsSearchFilter(list(tags)))
 
 # Connects to a device with a given connection string. The device is added to the instance.
 def connect_device(instance, connection_string):
