@@ -40,7 +40,7 @@ InstanceImpl::InstanceImpl(ContextPtr context, const StringPtr& localId)
 
 InstanceImpl::InstanceImpl(IInstanceBuilder* instanceBuilder)
     : context(ContextFromInstanceBuilder(instanceBuilder))
-    , moduleManager(this->context.assigned() ? this->context.asPtr<IContextInternal>().moveModuleManager() : nullptr)
+    , moduleManager(this->context.assigned() ? this->context.asPtr<IContextInternal>(true).moveModuleManager() : nullptr)
     , rootDeviceSet(false)
 {
     const auto builderPtr = InstanceBuilderPtr::Borrow(instanceBuilder);
@@ -51,7 +51,7 @@ InstanceImpl::InstanceImpl(IInstanceBuilder* instanceBuilder)
 
     if (connectionString.assigned() && connectionString.getLength())
     {
-        rootDevice = moduleManager.asPtr<IModuleManagerUtils>().createDevice(connectionString, nullptr, rootDeviceConfig);
+        rootDevice = moduleManager.asPtr<IModuleManagerUtils>(true).createDevice(connectionString, nullptr, rootDeviceConfig);
         LOG_I("Root device set to {}", connectionString)
         rootDeviceSet = true;
     }
@@ -62,14 +62,17 @@ InstanceImpl::InstanceImpl(IInstanceBuilder* instanceBuilder)
         rootDevice = Client(this->context, instanceId, builderPtr.getDefaultRootDeviceInfo());
     }
 
-    const auto devicePrivate = rootDevice.asPtrOrNull<IDevicePrivate>();
+    const auto devicePrivate = rootDevice.asPtrOrNull<IDevicePrivate>(true);
     if (devicePrivate.assigned())
-        devicePrivate->setAsRoot();
+    {
+        checkErrorInfo(devicePrivate->setAsRoot());
+        checkErrorInfo(context.asPtr<IContextInternal>(true)->setRootDevice(rootDevice));
+    }
 
     for (const auto& [_, discoveryServer] : context.getDiscoveryServers())
-        discoveryServer.asPtr<IDiscoveryServer>().setRootDevice(rootDevice);
+        discoveryServer.asPtr<IDiscoveryServer>(true).setRootDevice(rootDevice);
 
-    rootDevice.asPtr<IPropertyObjectInternal>().enableCoreEventTrigger();
+    rootDevice.asPtr<IPropertyObjectInternal>(true).enableCoreEventTrigger();
 }
 
 InstanceImpl::~InstanceImpl()
@@ -86,10 +89,15 @@ static StringPtr DefineLocalId(const StringPtr& localId)
     return "openDAQDevice";
 }
 
-static DiscoveryServerPtr createDiscoveryServer(const StringPtr& serviceName, const LoggerPtr& logger)
+static DiscoveryServerPtr createDiscoveryServer(const StringPtr& serviceName, const LoggerPtr& logger, const DictPtr<IString, IBaseObject>& instanceOptions)
 {
     if (serviceName == "mdns")
-        return MdnsDiscoveryServer(logger);
+    {
+        if (instanceOptions.hasKey("MdnsDiscoveryServer"))
+            return MdnsDiscoveryServerWithOptions(logger, instanceOptions.get("MdnsDiscoveryServer"));
+        else
+            return MdnsDiscoveryServer(logger);
+    }
     return nullptr;
 }
 
@@ -140,20 +148,20 @@ static ContextPtr ContextFromInstanceBuilder(IInstanceBuilder* instanceBuilder)
     if (!moduleManager.assigned())
     {
         moduleManager = ModuleManagerMultiplePaths(builderPtr.getModulePathsList());
-        moduleManager->setAuthenticatedOnly(loadAuthenticatedModulesOnly);
-        moduleManager->setModuleAuthenticator(moduleAuthenticator);
+        moduleManager.setAuthenticatedOnly(loadAuthenticatedModulesOnly);
         if (moduleAuthenticator != nullptr)
         {
-            moduleAuthenticator->setLogger(logger);
+            moduleManager.setModuleAuthenticator(moduleAuthenticator);
+            moduleAuthenticator.setLogger(logger);
         }
 
-        builderPtr->setModuleManager(moduleManager);
+        builderPtr.setModuleManager(moduleManager);
     }
 
     auto discoveryServers = Dict<IString, IDiscoveryServer>();
     for (const auto& serverName : builderPtr.getDiscoveryServers())
     {
-        auto server = createDiscoveryServer(serverName, logger);
+        auto server = createDiscoveryServer(serverName, logger, options);
         if (server.assigned())
             discoveryServers.set(serverName, server);
     }
@@ -359,16 +367,19 @@ ErrCode InstanceImpl::setRootDevice(IString* connectionString, IPropertyObject* 
     this->rootDevice = newRootDevice;
     rootDeviceSet = true;
 
-    const auto devicePrivate = rootDevice.asPtrOrNull<IDevicePrivate>();
+    const auto devicePrivate = rootDevice.asPtrOrNull<IDevicePrivate>(true);
     if (devicePrivate.assigned())
-        devicePrivate->setAsRoot();
+    {
+        OPENDAQ_RETURN_IF_FAILED(devicePrivate->setAsRoot());
+        OPENDAQ_RETURN_IF_FAILED(context.asPtr<IContextInternal>(true)->setRootDevice(rootDevice));
+    }
 
     for (const auto& [_, discoveryServer] : context.getDiscoveryServers())
-        discoveryServer.asPtr<IDiscoveryServer>().setRootDevice(rootDevice);
+        discoveryServer.asPtr<IDiscoveryServer>(true).setRootDevice(rootDevice);
 
     LOG_I("Root device explicitly set to {}", connectionStringPtr);
 
-    this->rootDevice.asPtr<IPropertyObjectInternal>().enableCoreEventTrigger();
+    this->rootDevice.asPtr<IPropertyObjectInternal>(true).enableCoreEventTrigger();
     return OPENDAQ_SUCCESS;
 }
 
@@ -447,7 +458,6 @@ ErrCode InstanceImpl::getParent(IComponent** parent)
 
     return OPENDAQ_SUCCESS;
 }
-
 
 ErrCode InstanceImpl::getName(IString** name)
 {
@@ -608,10 +618,11 @@ ErrCode InstanceImpl::saveConfiguration(IString** configuration)
         const auto prettyPrint = getPrettyPrintOnSaveConfig(this->context.getOptions());
         auto serializer = JsonSerializer(prettyPrint);
 
-        const ErrCode errCode = this->serializeForUpdate(serializer);
-        OPENDAQ_RETURN_IF_FAILED(errCode);
+        OPENDAQ_RETURN_IF_FAILED(this->serializeForUpdate(serializer));
 
-        return serializer->getOutput(configuration);
+        const ErrCode errCode = serializer->getOutput(configuration);
+        OPENDAQ_RETURN_IF_FAILED(errCode);
+        return errCode;
     });
     OPENDAQ_RETURN_IF_FAILED(errCode);
     return errCode;
@@ -628,9 +639,9 @@ ErrCode InstanceImpl::loadConfiguration(IString* configuration, IUpdateParameter
 
         auto updatable = this->template borrowInterface<IUpdatable>();
 
-        deserializer.update(updatable, configuration, configPtr);
-
-        return OPENDAQ_SUCCESS;
+        const ErrCode errCode = deserializer->update(updatable, configuration, configPtr);
+        OPENDAQ_RETURN_IF_FAILED(errCode);
+        return errCode;
     });
     OPENDAQ_RETURN_IF_FAILED(errCode);
     return errCode;

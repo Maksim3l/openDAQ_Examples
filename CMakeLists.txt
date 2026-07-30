@@ -93,6 +93,7 @@ option(OPENDAQ_MIMALLOC_SUPPORT "Enable MiMalloc-based packet allocator" OFF)
 option(OPENDAQ_ENABLE_NATIVE_STREAMING "Enable ${SDK_NAME} native streaming" OFF)
 option(OPENDAQ_ENABLE_ACCESS_CONTROL "Enable object-level access control" ON)
 option(OPENDAQ_RTGEN_ON_CMAKE_CONFIG "Run RT gen as part of the CMake configuration process to make sure the files exist during development" OFF)
+option(OPENDAQ_ENABLE_OBJECT_POOLS "Enable object pools for integer and float base objects" OFF)
 
 option(OPENDAQ_ENABLE_OPCUA "Enable OpcUa" OFF)
 
@@ -147,6 +148,9 @@ endif()
 
 # logging start
 include(openDAQLogging)
+
+set(OPENDAQ_DOTNET_TARGET_FRAMEWORKS "net8.0" CACHE STRING
+    "Semicolon-separated .NET target frameworks (e.g. net8.0;net9.0;net10.0)")
 
 set(OPENDAQ_LOG_LEVEL_DEBUG "Debug" CACHE STRING "Compile time logging level for debug builds")
 set_property(CACHE OPENDAQ_LOG_LEVEL_DEBUG PROPERTY STRINGS ${OPENDAQ_LOG_LEVELS})
@@ -293,7 +297,7 @@ endif()
 set(RTGEN_NAMESPACE ${SDK_TARGET_NAMESPACE})
 include(RTGen)
 
-if(NOT WIN32)
+if(NOT CMAKE_HOST_WIN32)
     # Make sure mono is found properly and exists
     find_program(MONO_C
         NAMES "mono"
@@ -370,6 +374,11 @@ if (OPENDAQ_ENABLE_WEBSOCKET_STREAMING AND (DAQMODULES_OPENDAQ_CLIENT_MODULE OR 
 endif()
 
 opendaq_setup_compiler_flags(${SDK_OPTION_PREFIX})
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10)
+    add_compile_options(-Wno-unknown-warning-option)
+endif()
+
 add_subdirectory(external_modules)
 
 include("${PROJ_DIR}/external/boost/Boost.cmake")

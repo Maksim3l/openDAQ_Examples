@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 openDAQ d.o.o.
+ * Copyright 2022-2026 openDAQ d.o.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ public:
     using Super = ImplementationOf<Intf, IConvertible, ICoreType, IComparable, ISerializable, Intfs...>;
 
     OrdinalObjectImpl(V value);
+    OrdinalObjectImpl();
 
     // IBaseObject
     ErrCode INTERFACE_FUNC getHashCode(SizeT* hashCode) override;
@@ -71,7 +72,13 @@ OrdinalObjectImpl<V, Intf, Intfs ...>::OrdinalObjectImpl(const V value)
 {
 }
 
-template <class V, class Intf, class ... Intfs>
+template <class V, class Intf, class... Intfs>
+OrdinalObjectImpl<V, Intf, Intfs...>::OrdinalObjectImpl()
+    : value(V {})
+{
+}
+
+template <class V, class Intf, class... Intfs>
 ErrCode OrdinalObjectImpl<V, Intf, Intfs ...>::equals(IBaseObject* other, Bool* equal) const
 {
     if (equal == nullptr)

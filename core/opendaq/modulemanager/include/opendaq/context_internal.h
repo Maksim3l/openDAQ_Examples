@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 openDAQ d.o.o.
+ * Copyright 2022-2026 openDAQ d.o.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,12 @@ DECLARE_OPENDAQ_INTERFACE(IContextInternal, IBaseObject)
      * Returns a nullptr on subsequent invocations, and if the manager is not assigned.
      */
     virtual ErrCode INTERFACE_FUNC moveModuleManager(IModuleManager** manager) = 0;
+
+    /*!
+     * @brief Sets the root device of the openDAQ instance.
+     * @param device The root device.
+     */
+    virtual ErrCode INTERFACE_FUNC setRootDevice(IBaseObject* device) = 0;
 };
 /*!@}*/
 

@@ -1,6 +1,6 @@
 ##
-# @tags: 
-# @title: 
+# @tags:
+# @title:
 ##
 # Creates a temporary json file to be used as a Json config provider for creating the openDAQ
 # instance. The file contains reference configuration parameters for mDNS server ratelimiting.
@@ -80,7 +80,7 @@ instance = instance_builder.build()
 # cleanup created file
 CONFIG_FILE.unlink()
 
-# Start an daq OpcUa and native streaming servers
+# Start an openDAQ OpcUa and native streaming servers
 servers = instance.add_standard_servers()
 
 # Enable discovery for all servers

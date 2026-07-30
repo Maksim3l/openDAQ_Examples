@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 openDAQ d.o.o.
+ * Copyright 2022-2026 openDAQ d.o.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ protected:
     void onUpdatableUpdateEnd(const BaseObjectPtr& context) override;
 
     virtual void syncComponentOperationMode(const ComponentPtr& component);
-    void notifyActiveChanged() override;
+    void notifyActiveChanged(bool onUpdate) override;
 
 private:
     bool removeItemWithLocalIdInternal(const std::string& str);
@@ -175,6 +175,8 @@ ErrCode INTERFACE_FUNC FolderImpl<Intf, Intfs...>::isEmpty(Bool* empty)
 {
     OPENDAQ_PARAM_NOT_NULL(empty);
 
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     *empty = items.empty() ? True : False;
 
     return OPENDAQ_SUCCESS;
@@ -212,12 +214,14 @@ void FolderImpl<Intf, Intfs...>::syncComponentOperationMode(const ComponentPtr& 
 }
 
 template <class Intf, class ... Intfs>
-void FolderImpl<Intf, Intfs...>::notifyActiveChanged()
+void FolderImpl<Intf, Intfs...>::notifyActiveChanged(bool onUpdate)
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     std::vector<ComponentPtr> itemsVec;
     for (const auto& [_, item] : this->items)
         itemsVec.emplace_back(item);
-    this->notifyItemsActiveChanged(itemsVec);
+    this->notifyItemsActiveChanged(itemsVec, onUpdate);
 }
 
 template <class Intf, class... Intfs>
@@ -344,6 +348,8 @@ ErrCode INTERFACE_FUNC FolderImpl<Intf, Intfs...>::getSerializeId(ConstCharPtr* 
 template <class Intf, class ... Intfs>
 ErrCode FolderImpl<Intf, Intfs...>::enableCoreEventTrigger()
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     for (const auto& [_, item] : items)
     {
         const ErrCode err = item.template asPtr<IPropertyObjectInternal>(true)->enableCoreEventTrigger();
@@ -356,6 +362,8 @@ ErrCode FolderImpl<Intf, Intfs...>::enableCoreEventTrigger()
 template <class Intf, class ... Intfs>
 ErrCode FolderImpl<Intf, Intfs...>::disableCoreEventTrigger()
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     for (const auto& [_, item] : items)
     {
         const ErrCode err = item.template asPtr<IPropertyObjectInternal>(true)->disableCoreEventTrigger();
@@ -449,6 +457,8 @@ void FolderImpl<Intf, Intfs...>::clearInternal()
 template <class Intf, class... Intfs>
 void FolderImpl<Intf, Intfs...>::removed()
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     clearInternal();
 }
 
@@ -466,6 +476,8 @@ bool FolderImpl<Intf, Intfs...>::addItemInternal(const ComponentPtr& component)
 template <class Intf, class ... Intfs>
 void FolderImpl<Intf, Intfs...>::serializeCustomObjectValues(const SerializerPtr& serializer, bool forUpdate)
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     Super::serializeCustomObjectValues(serializer, forUpdate);
 
     if (!items.empty())
@@ -516,6 +528,8 @@ void FolderImpl<Intf, Intfs...>::deserializeCustomObjectValues(
 template <class Intf, class... Intfs>
 void FolderImpl<Intf, Intfs...>::callBeginUpdateOnChildren()
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     Super::callBeginUpdateOnChildren();
 
     for (const auto& [_, item] : items)
@@ -531,6 +545,8 @@ void FolderImpl<Intf, Intfs...>::callBeginUpdateOnChildren()
 template <class Intf, class... Intfs>
 void FolderImpl<Intf, Intfs...>::callEndUpdateOnChildren()
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     Super::callEndUpdateOnChildren();
 
     for (const auto& [_, item] : items)
@@ -546,6 +562,8 @@ void FolderImpl<Intf, Intfs...>::callEndUpdateOnChildren()
 template <class Intf, class ... Intfs>
 void FolderImpl<Intf, Intfs...>::onUpdatableUpdateEnd(const BaseObjectPtr& context)
 {
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     for (const auto& [_, item] : items)
     {
         const auto updatable = item.template asPtrOrNull<IUpdatable>(true);
@@ -561,6 +579,8 @@ ErrCode FolderImpl<Intf, Intfs...>::updateOperationMode(OperationModeType modeTy
     ErrCode errCode = Super::updateOperationMode(modeType);
     OPENDAQ_RETURN_IF_FAILED(errCode);
 
+    // Protect 'items' from concurrent access
+    auto lock = this->getRecursiveConfigLock2();
     for (const auto& [_, item] : items)
     {
         auto componentPrivate = item.template asPtrOrNull<IComponentPrivate>(true);

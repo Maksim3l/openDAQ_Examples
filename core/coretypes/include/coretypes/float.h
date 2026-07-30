@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 openDAQ d.o.o.
+ * Copyright 2022-2026 openDAQ d.o.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,5 +71,6 @@ OPENDAQ_DECLARE_CLASS_FACTORY_FUNC_WITH_INTERFACE(
     const Float,
     value
 )
+OPENDAQ_DECLARE_CLASS_FACTORY_WITH_INTERFACE_AND_CREATEFUNC(LIBRARY_FACTORY, FloatFromPool, IFloat, createFloatFromPool, const Float, value)
 
 END_NAMESPACE_OPENDAQ

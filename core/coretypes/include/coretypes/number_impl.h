@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 openDAQ d.o.o.
+ * Copyright 2022-2026 openDAQ d.o.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ public:
     using Super = OrdinalObjectImpl<V, Intf, INumber>;
 
     NumberImpl(V value);
+    NumberImpl();
 
     // INumber
     ErrCode INTERFACE_FUNC getFloatValue(Float* value) override;
@@ -37,6 +38,12 @@ public:
 template<class V, class Intf>
 NumberImpl<V, Intf>::NumberImpl(V value)
     : Super(value)
+{
+}
+
+template <class V, class Intf>
+NumberImpl<V, Intf>::NumberImpl()
+    : Super()
 {
 }
 
